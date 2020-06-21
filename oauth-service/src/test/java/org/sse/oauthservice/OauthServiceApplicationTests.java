@@ -1,13 +1,13 @@
-package org.sse.kgdatacenter;
+package org.sse.oauthservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class KgdatacenterApplicationTests {
+class OauthServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }

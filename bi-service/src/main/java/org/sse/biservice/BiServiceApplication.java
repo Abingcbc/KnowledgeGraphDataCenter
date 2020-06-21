@@ -1,13 +1,13 @@
-package org.sse.kgdatacenter;
+package org.sse.biservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KgdatacenterApplication {
+public class BiServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KgdatacenterApplication.class, args);
+        SpringApplication.run(BiServiceApplication.class, args);
     }
 
 }
