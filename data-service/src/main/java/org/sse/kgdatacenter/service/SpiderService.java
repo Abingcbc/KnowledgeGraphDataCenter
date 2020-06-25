@@ -108,10 +108,14 @@ public class SpiderService {
         String artist1 = "http://dbpedia.org/resource/"+name1;
         String artist2 = "http://dbpedia.org/resource/"+name2;
         HttpClient client = HttpClients.createDefault();
+        HttpHost proxy = new HttpHost("localhost", 1080);
         HttpGet get = new HttpGet("http://sematch.cluster.gsi.dit.upm.es/api/entity_sim?e1=" + artist1 + "&e2=" + artist2);
         try {
+            get.setConfig(RequestConfig.custom()
+                    .setProxy(proxy).build());
             HttpResponse response = client.execute(get);
             String responseContent = EntityUtils.toString(response.getEntity());
+            log.info(responseContent);
             result.set(0, JSONObject.parseArray(responseContent).getJSONObject(0).getDouble("sim"));
             result.set(1, JSONObject.parseArray(responseContent).getJSONObject(1).getDouble("sim"));
         } catch (IOException e) {

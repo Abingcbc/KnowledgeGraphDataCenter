@@ -46,7 +46,7 @@ public class ESservice {
         }
     }
 
-    public void insert(String name, String type) {
+    public void insert(String type, String name) {
         IndexRequest request = new IndexRequest("bi");
         Map<String, String> sourceMap = new HashMap<>();
         sourceMap.put("name", name);

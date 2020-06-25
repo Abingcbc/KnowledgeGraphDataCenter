@@ -13,5 +13,5 @@ public class SingerDetail implements Serializable {
     private String desc;
     private String videoUrl;
     private Map<String, String> properties;
-    private List<Entity> recList;
+    private List<DataEntity> recList;
 }

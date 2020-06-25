@@ -5,6 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class BasicQueryDto implements Serializable {
@@ -24,8 +25,8 @@ public class BasicQueryDto implements Serializable {
 
     @Data
     public static class BasicQueryPath implements Serializable {
-        private List<Entity> nodes;
-        private List<Relation> relationships;
+        private Set<Entity> nodes;
+        private Set<Relation> relationships;
     }
 }
 

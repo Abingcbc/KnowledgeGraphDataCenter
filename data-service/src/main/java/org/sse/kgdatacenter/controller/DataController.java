@@ -14,8 +14,10 @@ import org.sse.kgdatacenter.service.SpiderService;
 
 import javax.ws.rs.PathParam;
 import java.util.ArrayList;
+import java.util.Collections;
 
 @Slf4j
+@CrossOrigin
 @RestController()
 public class DataController {
 
@@ -65,9 +67,13 @@ public class DataController {
         SingerCompare singerCompare = new SingerCompare();
         singerCompare.setSinger1(spiderService.getSingerInfo(name1));
         singerCompare.setSinger2(spiderService.getSingerInfo(name2));
+        singerCompare.getSinger1().setName(singerCompare.getSinger1().getName().replace("%20", " "));
+        singerCompare.getSinger2().setName(singerCompare.getSinger2().getName().replace("%20", " "));
+        log.info("singerInfo");
         ArrayList<Double> similarity = spiderService.getSimilarity(name1, name2);
         singerCompare.setRelatedness(similarity.get(0));
         singerCompare.setSimilarity(similarity.get(1));
+        log.info("similar");
         redisService.set(name1+name2, singerCompare);
         return singerCompare;
     }
@@ -88,13 +94,15 @@ public class DataController {
         }
         String searchName = name.replace(" ", "_");
         Singer singer = spiderService.getSingerInfo(searchName);
+        singerDetail = new SingerDetail();
         singerDetail.setName(name);
         singerDetail.setDesc(singer.getDescription());
         singerDetail.setImgUrl(singer.getImageUrl());
         singerDetail.setVideoUrl(singer.getYoutubeUrl());
         singerDetail.setProperties(singer.getProperty());
         BasicQueryDto basicQueryDto = basicRepository.queryOneEntity(searchName, 2, 10);
-        singerDetail.setRecList(basicQueryDto.getResults().get(0).getData().get(0).getGraph().getNodes());
+        singerDetail.setRecList(new ArrayList<>(basicQueryDto.getResults().get(0).getData().get(0).getGraph().getNodes()));
+        redisService.set("info"+name, singerDetail);
         return singerDetail;
     }
 }

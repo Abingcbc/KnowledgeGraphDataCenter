@@ -8,6 +8,7 @@ import java.util.Map;
 @Data
 public class Relation implements Serializable {
 
+    private String id;
     private String type;
     private String startNode;
     private String endNode;

@@ -47,14 +47,14 @@ public class BasicRepository {
                     "where a.name='"+name1+ "' and b.name='" + name2 +
                     "' return p limit " + limit;
         } else if (type > 0) {
-            queryString = "match p=((a)-[r*1..."+type+"]-(b)) " +
-                    "where a:entity and b:entity and a.name='" + name1 +
+            queryString = "match p=((a)-[r*1.."+type+"]-(b)) " +
+                    "where a.name='" + name1 +
                     "' and b.name='" + name2 +
                     "' return p limit " + limit;
         } else {
             //全部路径
             queryString = "match p=((a)-[r*]-(b)) " +
-                    "where a:entity and b:entity and a.name='" + name1 +
+                    "where a.name='" + name1 +
                     "' and b.name='" + name2 +
                     "' return p limit " + limit;
         }
@@ -71,8 +71,9 @@ public class BasicRepository {
 
     public BasicQueryDto dtoTransform(List<Record> queryResult) {
         BasicQueryDto.BasicQueryPath basicQueryPath = new BasicQueryDto.BasicQueryPath();
-        basicQueryPath.setNodes(new ArrayList<>());
-        basicQueryPath.setRelationships(new ArrayList<>());
+        basicQueryPath.setNodes(new HashSet<>());
+        basicQueryPath.setRelationships(new HashSet<>());
+        int count = 1;
         for (Record record : queryResult) {
             for (Value value : record.values()) {
                 Path path = value.asPath();
@@ -83,7 +84,7 @@ public class BasicRepository {
                     Entity entity = new Entity();
                     entity.setId(String.valueOf(node.id()));
                     entity.setLabels(new ArrayList<>());
-                    entity.getLabels().add("Entity");
+                    entity.getLabels().add(node.labels().iterator().next());
                     entity.setProperties(new HashMap<>());
                     entity.getProperties().put("name", map.get("name").toString());
                     entity.getProperties().put("url", map.get("url").toString());
@@ -92,10 +93,12 @@ public class BasicRepository {
                 for (Relationship relationship : relationships) {
                     Map<String, Object> map = relationship.asMap();
                     Relation relation = new Relation();
+                    relation.setId(String.valueOf(count));
                     relation.setStartNode(String.valueOf(relationship.startNodeId()));
                     relation.setEndNode(String.valueOf(relationship.endNodeId()));
                     relation.setType(map.get("type").toString());
                     basicQueryPath.getRelationships().add(relation);
+                    count += 1;
                 }
             }
         }

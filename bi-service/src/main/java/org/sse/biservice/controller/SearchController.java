@@ -2,11 +2,9 @@ package org.sse.biservice.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.sse.biservice.model.Entity;
+import org.sse.biservice.model.SingerCompare;
 import org.sse.biservice.model.SingerDetail;
 import org.sse.biservice.service.ESservice;
 import org.sse.biservice.service.RedisService;
@@ -15,6 +13,7 @@ import org.sse.biservice.service.RestService;
 import java.util.List;
 
 @Slf4j
+@CrossOrigin
 @RestController
 public class SearchController {
 
@@ -27,14 +26,7 @@ public class SearchController {
 
     @PostMapping("/search/searchResult/{keyword}")
     public List<Entity> searchEntity(@PathVariable String keyword) {
-        List<Entity> entities = (List<Entity>) redisService.get("searchResult-"+keyword);
-        if (entities != null) {
-            log.info("use cache");
-            return entities;
-        }
-        entities = eSservice.searchSinger(keyword);
-        redisService.set("searchResult-"+keyword, entities);
-        return entities;
+        return eSservice.searchSinger(keyword);
     }
 
     @PostMapping("/search/singerDetail/{name}")
@@ -47,5 +39,18 @@ public class SearchController {
         singerDetail = restService.requestSingerDetail(name);
         redisService.set("singerDetail-"+name, singerDetail);
         return singerDetail;
+    }
+
+    @GetMapping("/search/singerCompare/{name1}/{name2}")
+    public SingerCompare getSingerCompare(@PathVariable String name1,
+                                          @PathVariable String name2) {
+        SingerCompare singerCompare = (SingerCompare) redisService.get("singerCompare-"+name1+name2);
+        if (singerCompare != null) {
+            log.info("use cache");
+            return singerCompare;
+        }
+        singerCompare = restService.requestSingerCompare(name1, name2);
+        redisService.set("singerDetail-"+name1+name2, singerCompare);
+        return singerCompare;
     }
 }
